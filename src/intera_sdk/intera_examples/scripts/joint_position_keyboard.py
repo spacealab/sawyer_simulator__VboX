@@ -39,10 +39,25 @@ def map_keyboard(side):
 
     joints = limb.joint_names()
 
+    # Initial resolution (delta)
+    delta = 0.1
+
     def set_j(limb, joint_name, delta):
         current_position = limb.joint_angle(joint_name)
         joint_command = {joint_name: current_position + delta}
         limb.set_joint_positions(joint_command)
+
+    # Function to change resolution
+    def change_resolution(new_delta):
+        global delta
+        delta = new_delta
+        print("Resolution changed to: %.3f radians" % delta)
+
+    # Function to change resolution
+    def change_resolution(new_delta):
+        global delta
+        delta = new_delta
+        print("Resolution changed to: %.3f radians" % delta)
 
     def set_g(action):
         if has_gripper:
@@ -53,22 +68,28 @@ def map_keyboard(side):
             elif action == "calibrate":
                 gripper.calibrate()
 
-    bindings = {
-        '1': (set_j, [limb, joints[0], 0.1], joints[0]+" increase"),
-        'q': (set_j, [limb, joints[0], -0.1], joints[0]+" decrease"),
-        '2': (set_j, [limb, joints[1], 0.1], joints[1]+" increase"),
-        'w': (set_j, [limb, joints[1], -0.1], joints[1]+" decrease"),
-        '3': (set_j, [limb, joints[2], 0.1], joints[2]+" increase"),
-        'e': (set_j, [limb, joints[2], -0.1], joints[2]+" decrease"),
-        '4': (set_j, [limb, joints[3], 0.1], joints[3]+" increase"),
-        'r': (set_j, [limb, joints[3], -0.1], joints[3]+" decrease"),
-        '5': (set_j, [limb, joints[4], 0.1], joints[4]+" increase"),
-        't': (set_j, [limb, joints[4], -0.1], joints[4]+" decrease"),
-        '6': (set_j, [limb, joints[5], 0.1], joints[5]+" increase"),
-        'y': (set_j, [limb, joints[5], -0.1], joints[5]+" decrease"),
-        '7': (set_j, [limb, joints[6], 0.1], joints[6]+" increase"),
-        'u': (set_j, [limb, joints[6], -0.1], joints[6]+" decrease")
-     }
+    def get_bindings():
+        return {
+            '1': (set_j, [limb, joints[0], delta], joints[0]+" increase"),
+            'q': (set_j, [limb, joints[0], -delta], joints[0]+" decrease"),
+            '2': (set_j, [limb, joints[1], delta], joints[1]+" increase"),
+            'w': (set_j, [limb, joints[1], -delta], joints[1]+" decrease"),
+            '3': (set_j, [limb, joints[2], delta], joints[2]+" increase"),
+            'e': (set_j, [limb, joints[2], -delta], joints[2]+" decrease"),
+            '4': (set_j, [limb, joints[3], delta], joints[3]+" increase"),
+            'r': (set_j, [limb, joints[3], -delta], joints[3]+" decrease"),
+            '5': (set_j, [limb, joints[4], delta], joints[4]+" increase"),
+            't': (set_j, [limb, joints[4], -delta], joints[4]+" decrease"),
+            '6': (set_j, [limb, joints[5], delta], joints[5]+" increase"),
+            'y': (set_j, [limb, joints[5], -delta], joints[5]+" decrease"),
+            '7': (set_j, [limb, joints[6], delta], joints[6]+" increase"),
+            'u': (set_j, [limb, joints[6], -delta], joints[6]+" decrease"),
+            'a': (change_resolution, 0.05, "Resolution to 0.05"),
+            's': (change_resolution, 0.1, "Resolution to 0.1"),
+            'd': (change_resolution, 0.2, "Resolution to 0.2")
+         }
+
+    bindings = get_bindings()
     if has_gripper:
         bindings.update({
         '8': (set_g, "close", side+" gripper close"),
@@ -86,7 +107,17 @@ def map_keyboard(side):
                 rospy.signal_shutdown("Example finished.")
             elif c in bindings:
                 cmd = bindings[c]
-                if c == '8' or c == 'i' or c == '9':
+                if c in ['a', 's', 'd']:
+                    cmd[0](cmd[1])
+                    bindings = get_bindings()  # Update bindings after resolution change
+                    if has_gripper:
+                        bindings.update({
+                        '8': (set_g, "close", side+" gripper close"),
+                        'i': (set_g, "open", side+" gripper open"),
+                        '9': (set_g, "calibrate", side+" gripper calibrate")
+                        })
+                    print("command: %s" % (cmd[2],))
+                elif c == '8' or c == 'i' or c == '9':
                     cmd[0](cmd[1])
                     print("command: %s" % (cmd[2],))
                 else:

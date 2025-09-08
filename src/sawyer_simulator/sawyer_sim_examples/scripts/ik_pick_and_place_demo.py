@@ -16,6 +16,14 @@
 
 """
 Sawyer SDK Inverse Kinematics Pick and Place Demo
+
+Exercise 1: Changing Joint Movement Resolution in joint_position_keyboard.py
+- Default resolution: 0.1 radians
+- Resolution change keys:
+  - 'a': Set resolution to 0.05 (higher precision)
+  - 's': Set resolution to 0.1 (default)
+  - 'd': Set resolution to 0.2 (larger movement)
+- Changes include adding delta variable, change_resolution function, and updating bindings.
 """
 import argparse
 import struct

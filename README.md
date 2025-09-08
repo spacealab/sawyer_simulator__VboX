@@ -263,3 +263,15 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 - **Current**: Based on Rethink Robotics Sawyer Simulator v5.3.0
 - **ROS Support**: Indigo, Kinetic, Melodic, Noetic
 - **Gazebo**: Compatible with ROS distribution versions
+
+## Exercises
+
+### Exercise 1: Modifying Joint Movement Resolution
+- **File**: `src/intera_sdk/intera_examples/scripts/joint_position_keyboard.py`
+- **Description**: Added functionality to change the resolution (delta) of joint movements using keyboard keys.
+- **Changes**:
+  - Added `delta` variable for resolution control.
+  - Created `change_resolution()` function to update delta.
+  - Updated `bindings` dictionary to use dynamic delta.
+  - Added keys 'a' (0.05 rad), 's' (0.1 rad), 'd' (0.2 rad) for resolution switching.
+- **Usage**: Run the script and press the keys to adjust movement precision.
