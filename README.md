@@ -275,3 +275,24 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
   - Updated `bindings` dictionary to use dynamic delta.
   - Added keys 'a' (0.05 rad), 's' (0.1 rad), 'd' (0.2 rad) for resolution switching.
 - **Usage**: Run the script and press the keys to adjust movement precision.
+
+### Exercise 2: Joint Control Interface with GUI
+- **File**: `src/intera_sdk/intera_examples/scripts/joint_control_interface.py`
+- **Description**: Created a comprehensive GUI-based joint control interface with live monitoring and multiple control methods.
+- **Features**:
+  - **Live Joint Monitoring**: Real-time display of joint angles in degrees with change tracking.
+  - **Dual Control Methods**: Both keyboard shortcuts and mouse wheel control for flexibility.
+  - **Joint Selection System**: Click-to-select interface for individual joint control via mouse wheel.
+  - **Visual Feedback**: Color-coded status updates and selection indicators.
+  - **Fixed Resolution**: Consistent 6.0° movement steps for precise control.
+- **Changes**:
+  - Added Tkinter GUI with organized layout and status displays.
+  - Implemented joint state subscriber for real-time angle monitoring.
+  - Created joint selection system with toggle buttons (Select/Selected).
+  - Added mouse wheel event handling with cross-platform support (Linux/Windows).
+  - Integrated keyboard control mapping (1/q, 2/w, 3/e, 4/r, 5/t, 6/y, 7/u).
+  - Added comprehensive error handling and debug output.
+- **Usage**: 
+  - Run `rosrun intera_examples joint_control_interface.py`
+  - Use keyboard keys for direct control or select a joint and use mouse wheel
+  - Monitor joint angles and changes in real-time through the GUI interface
