@@ -1,67 +1,70 @@
-# 🤖 راهنمای سریع برداشتن باکس با ربات Sawyer
+# 🤖 Quick Guide for Picking Up a Box with Sawyer
 
-## 🚀 شروع سریع
+## 🚀 Quick Start
 
-### 1️⃣ آماده‌سازی
+### 1️⃣ Preparation
 ```bash
-cd /home/ali/Downloads/ubuntu/sawyerws_v1
+# Navigate to your Sawyer workspace
+cd /path/to/your/sawyer_ws
+# Source the environment
 source devel/setup.bash
+# Run the manual control interface
 rosrun intera_examples joint_control_interface.py
 ```
 
-### 2️⃣ کالیبره کردن (اجباری!)
-- کلید **`C`** را بزنید
-- منتظر بمانید تا "کالیبره شد" نمایش داده شود ✅
+### 2️⃣ Calibration (Mandatory!)
+- Press the **`C`** key.
+- Wait until "Calibrated" is displayed ✅.
 
-## 🎯 مراحل برداشتن باکس (گام به گام)
+## 🎯 Steps for Picking Up a Box (Step-by-Step)
 
-### قدم 1: موقعیت‌یابی بالای باکس
-- **`1`** = حرکت چپ
-- **`q`** = حرکت راست  
-- **`2`** = بالا رفتن
-- **`w`** = پایین آمدن ⬇️
+### Step 1: Position Above the Box
+- **`1`** = Move Left
+- **`q`** = Move Right
+- **`2`** = Move Up
+- **`w`** = Move Down ⬇️
 
-### قدم 2: نزدیک شدن به باکس
-- **`w`** را چندبار بزنید تا نزدیک باکس شوید
-- دقت کنید زیادی پایین نیاید!
+### Step 2: Approach the Box
+- Press **`w`** a few times to get close to the box.
+- Be careful not to go too low!
 
-### قدم 3: گرفتن باکس
-- **`P`** بزنید (Close Gripper) 🔒
-- منتظر "باکس گرفته شد" بمانید
+### Step 3: Grab the Box
+- Press **`P`** (Close Gripper) 🔒.
+- Wait for the "Box Grabbed" message.
 
-### قدم 4: بلند کردن باکس
-- **`2`** بزنید تا باکس بلند شود ⬆️
+### Step 4: Lift the Box
+- Press **`2`** to lift the box ⬆️.
 
-### قدم 5: انتقال باکس
-- با کلیدهای **`1,q,3,e,4,r`** به مکان مقصد بروید
+### Step 5: Move the Box
+- Use keys **`1,q,3,e,4,r`** to move to the destination.
 
-### قدم 6: رها کردن باکس
-- **`w`** بزنید تا پایین بیاید
-- **`O`** بزنید (Open Gripper) 🔓
-- **`2`** بزنید تا ربات دور شود
+### Step 6: Release the Box
+- Press **`w`** to lower the box.
+- Press **`O`** (Open Gripper) 🔓.
+- Press **`2`** to move the robot away.
 
-## 🎮 کلیدهای اصلی
+## 🎮 Main Keys
 
-| کلید | عملکرد | استفاده برای باکس |
-|------|---------|-------------------|
-| **C** | کالیبره | ✅ شروع اجباری |
-| **2** | بالا | ⬆️ بلند کردن |
-| **w** | پایین | ⬇️ نزدیک شدن |
-| **1** | چپ | ←→ موقعیت‌یابی |
-| **q** | راست | ←→ موقعیت‌یابی |
-| **P** | بستن گیره | 🔒 گرفتن باکس |
-| **O** | باز کردن گیره | 🔓 رها کردن |
+| Key | Function | Usage for Box |
+|------|-----------|-------------------|
+| **C** | Calibrate | ✅ Mandatory Start |
+| **2** | Up | ⬆️ Lifting |
+| **w** | Down | ⬇️ Approaching |
+| **1** | Left | ←→ Positioning |
+| **q** | Right | ←→ Positioning |
+| **P** | Close Gripper | 🔒 Grabbing Box |
+| **O** | Open Gripper | 🔓 Releasing Box |
 
-## ⚠️ نکات مهم
+## ⚠️ Important Notes
 
-1. **همیشه ابتدا C بزنید!**
-2. **آرام حرکت کنید** - هر کلید را یکبار بزنید
-3. **پیام‌های روی صفحه را بخوانید** - راهنمایی می‌کنند
-4. **اگر گیر کرد**: Esc بزنید و دوباره شروع کنید
+1.  **Always press C first!**
+2.  **Move slowly** - press each key once at a time.
+3.  **Read the on-screen messages** - they provide guidance.
+4.  **If you get stuck**: Press Esc and start over.
 
-## 🎬 ترتیب کامل برای یک برداشت موفق:
+## 🎬 Full Sequence for a Successful Pickup:
 ```
-C → تنظیم موقعیت (1,q,2,w) → w (نزدیک باکس) → P (گرفتن) → 2 (بلند کردن) → حرکت → w (پایین) → O (رها کردن) → 2 (دور شدن)
+C → Position (1,q,2,w) → w (approach box) → P (grab) → 2 (lift) → Move → w (lower) → O (release) → 2 (move away)
 ```
 
-**موفق باشید! 🎉**
+**Good luck! 🎉**
