@@ -114,28 +114,43 @@ rosdep update
 
 ### Using the Python SDK
 
-The Intera SDK provides Python interfaces for robot control:
-
 ```python
 import rospy
 import intera_interface
 
-# Initialize ROS node
 rospy.init_node('sawyer_example')
-
-# Get robot interfaces
 limb = intera_interface.Limb('right')
-gripper = intera_interface.Gripper('right')
+gripper = intera_interface.Gripper('right_gripper')
 
-# Move to neutral position
+# Basic operations
 limb.move_to_neutral()
-
-# Control gripper
+gripper.calibrate()  # Required!
 gripper.open()
 gripper.close()
 ```
 
-### Environment Setup Script
+### Joint Control Interface
+
+Interactive robot control with GUI:
+
+```bash
+rosrun intera_examples joint_control_interface.py
+```
+
+**Quick Controls:**
+- **C** = Calibrate gripper (do first!)
+- **2/w** = Up/down movement (SHOULDER)
+- **1/q** = Left/right positioning (BASE)  
+- **P** = Grab, **O** = Release
+- **Mouse** = Select joint + wheel for precision
+
+**Joint Locations:**
+- j0 (BASE): 1/q - Rotate entire arm
+- j1 (SHOULDER): 2/w - Main up/down
+- j2 (ELBOW): 3/e - Extend/bend reach
+- j3-j6: Fine wrist adjustments
+
+### Examples
 
 Use the provided `intera.sh` script for convenient environment setup:
 
@@ -187,50 +202,44 @@ nano intera.sh
 
 ## Examples
 
-### Basic Joint Control
+### Basic Joint & Gripper Control
 ```python
-from intera_interface import Limb
 import rospy
+from intera_interface import Limb, Gripper
 
-rospy.init_node('joint_control')
+rospy.init_node('robot_control')
 limb = Limb('right')
+gripper = Gripper('right_gripper')
 
-# Get current joint angles
-angles = limb.joint_angles()
-
-# Move to specific joint positions
-joint_command = {'right_j0': 0.0, 'right_j1': 0.0, 'right_j2': 0.0,
-                 'right_j3': 0.0, 'right_j4': 0.0, 'right_j5': 0.0,
-                 'right_j6': 0.0}
-limb.move_to_joint_positions(joint_command)
+# Basic operations
+gripper.calibrate()          # Required first!
+limb.move_to_neutral()       # Safe position
+gripper.close()              # Grab
+gripper.open()               # Release
 ```
 
-### Cartesian Control
+### Simple Pick & Place
 ```python
-# Move to Cartesian pose
-pose = limb.endpoint_pose()
-pose['position'].x += 0.1  # Move 10cm in x
-limb.move_to_cartesian_pose(pose)
+# Get joint angles and modify for pickup
+angles = limb.joint_angles()
+angles['right_j1'] = -0.5    # Lower shoulder
+limb.move_to_joint_positions(angles)
+gripper.close()              # Grab
+
+angles['right_j1'] = 0.2     # Lift up
+angles['right_j0'] = 0.5     # Rotate to new position
+limb.move_to_joint_positions(angles)
+gripper.open()               # Release
 ```
 
 ## Troubleshooting
 
-### Common Issues
-
-1. **Gazebo crashes on startup**:
-   - Ensure graphics drivers are properly installed
-   - Try running with `gui:=false` for headless mode
-
-2. **ROS dependency errors**:
-   - Run `rosdep install --from-paths src --ignore-src -r -y`
-   - Ensure ROS environment is sourced
-
-3. **Python import errors**:
-   - Check Python path: `echo $PYTHONPATH`
-   - Ensure workspace is built and sourced
-
-4. **Joint limits exceeded**:
-   - Use the SNS-IK library for constraint-aware IK solving
+**Common Fixes:**
+- **Gazebo crash**: Try `gui:=false` for headless mode
+- **Dependencies**: Run `rosdep install --from-paths src --ignore-src -r -y`
+- **GUI errors**: Check graphics drivers or run headless
+- **Gripper warnings**: Use `Gripper('right_gripper')` instead of `Gripper('right')`
+- **Interface issues**: Ensure ROS master running (`roscore`) and workspace sourced
 
 ### Getting Help
 
@@ -266,33 +275,34 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Exercises
 
-### Exercise 1: Modifying Joint Movement Resolution
-- **File**: `src/intera_sdk/intera_examples/scripts/joint_position_keyboard.py`
-- **Description**: Added functionality to change the resolution (delta) of joint movements using keyboard keys.
-- **Changes**:
-  - Added `delta` variable for resolution control.
-  - Created `change_resolution()` function to update delta.
-  - Updated `bindings` dictionary to use dynamic delta.
-  - Added keys 'a' (0.05 rad), 's' (0.1 rad), 'd' (0.2 rad) for resolution switching.
-- **Usage**: Run the script and press the keys to adjust movement precision.
+### Enhanced Joint Control with GUI Interface
+- **Files**: 
+  - `src/intera_sdk/intera_examples/scripts/joint_position_keyboard.py` (Variable resolution control)
+  - `src/intera_sdk/intera_examples/scripts/joint_control_interface.py` (GUI interface with gripper)
 
-### Exercise 2: Joint Control Interface with GUI
-- **File**: `src/intera_sdk/intera_examples/scripts/joint_control_interface.py`
-- **Description**: Created a comprehensive GUI-based joint control interface with live monitoring and multiple control methods.
 - **Features**:
-  - **Live Joint Monitoring**: Real-time display of joint angles in degrees with change tracking.
-  - **Dual Control Methods**: Both keyboard shortcuts and mouse wheel control for flexibility.
-  - **Joint Selection System**: Click-to-select interface for individual joint control via mouse wheel.
-  - **Visual Feedback**: Color-coded status updates and selection indicators.
-  - **Fixed Resolution**: Consistent 6.0° movement steps for precise control.
-- **Changes**:
-  - Added Tkinter GUI with organized layout and status displays.
-  - Implemented joint state subscriber for real-time angle monitoring.
-  - Created joint selection system with toggle buttons (Select/Selected).
-  - Added mouse wheel event handling with cross-platform support (Linux/Windows).
-  - Integrated keyboard control mapping (1/q, 2/w, 3/e, 4/r, 5/t, 6/y, 7/u).
-  - Added comprehensive error handling and debug output.
-- **Usage**: 
-  - Run `rosrun intera_examples joint_control_interface.py`
-  - Use keyboard keys for direct control or select a joint and use mouse wheel
-  - Monitor joint angles and changes in real-time through the GUI interface
+  - **Variable Resolution**: Adjustable movement precision (0.05, 0.1, 0.2 rad) using keys 'a', 's', 'd'
+  - **GUI Interface**: Real-time joint monitoring with dual control methods
+  - **Gripper Control**: Complete gripper functionality (open/close/calibrate)
+  - **Pick & Place Guide**: Step-by-step box pickup instructions
+  - **Joint Reference**: Clear explanation of each joint location and function
+
+- **Quick Usage**:
+  ```bash
+  # Variable resolution control
+  rosrun intera_examples joint_position_keyboard.py
+  
+  # GUI interface with gripper
+  rosrun intera_examples joint_control_interface.py
+  ```
+
+- **Key Controls**:
+  - **C**: Calibrate gripper (required first!)
+  - **1/q**: j0 (BASE) - Rotate arm left/right
+  - **2/w**: j1 (SHOULDER) - Move arm up/down (main movement)
+  - **3/e**: j2 (ELBOW) - Extend/bend arm
+  - **P**: Close gripper (grab), **O**: Open gripper (release)
+  - **Mouse**: Select joint + wheel for precise control
+
+- **Box Pickup Steps**:
+  1. Press 'C' → 2. Position above box → 3. Lower with 'w' → 4. Grab with 'P' → 5. Lift with '2' → 6. Move to destination → 7. Lower with 'w' → 8. Release with 'O'

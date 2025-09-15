@@ -40,7 +40,7 @@ class JointControlInterface:
         # Initialize ROS
         rospy.init_node("joint_control_interface")
         self.limb = intera_interface.Limb('right')
-        self.gripper = intera_interface.Gripper('right_gripper')  # Fixed deprecated warning
+        self.gripper = intera_interface.Gripper('right_gripper')  # Use full gripper name to avoid deprecated warning
         self.joints = self.limb.joint_names()
 
         # Resolution control (fixed at default 6 degrees)
